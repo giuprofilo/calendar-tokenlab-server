@@ -9,6 +9,7 @@ const userRouter = express.Router();
 // variáveis em MAISCULO são consideradas GERAIS
 const SALT_ROUNDS = 10; // quão complexo queremos que o salt seja criado || maior o numero MAIOR a demora na criação da hash
 
+//criar conta
 userRouter.post("/signup", async (req, res) => {
   try {
     const form = req.body;
@@ -44,6 +45,7 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
+//fazer login
 userRouter.post("/login", async (req, res) => {
   try {
     const form = req.body;
@@ -77,6 +79,53 @@ userRouter.post("/login", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json(err.message);
+  }
+});
+
+//get all users
+userRouter.get("/get_all", isAuth, async (req, res) => {
+  try {
+    const allUsers = await userModel.find();
+
+    return res.status(200).json(allUsers);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+//get user by id
+userRouter.get("/profile", isAuth, async (req, res) => {
+  try {
+    const id_user = req.auth._id;
+
+    const user = await userModel
+      .findById(id_user)
+      .select("-passwordHash")
+      .populate("eventos");
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+});
+
+//edit user
+userRouter.put("/edit", isAuth, async (req, res) => {
+  try {
+    const id_user = req.auth._id;
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      id_user,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
   }
 });
 export default userRouter;

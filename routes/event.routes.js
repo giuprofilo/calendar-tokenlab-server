@@ -6,6 +6,29 @@ import isAuth from "../middlewares/isAuth.js";
 
 const eventRouter = express.Router();
 
+//get all events
+eventRouter.get("/get_all", isAuth, async (req, res) => {
+  try {
+    const allEvents = await eventsModel.find();
+    return res.status(200).json(allEvents);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+//get one event
+eventRouter.get("/get_all/id_event", isAuth, async (req, res) => {
+  try {
+    const id_event = req.params.id_event;
+    const event = await eventsModel.findById(id_event);
+    return res.status(200).json(event);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
 //rota p criar um evento
 eventRouter.post("/create", isAuth, async (req, res) => {
   try {
@@ -37,6 +60,42 @@ eventRouter.post("/create", isAuth, async (req, res) => {
     return res.status(201).json(eventCreated);
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+});
+
+//edit event
+// http://localhost:4000/event/edit/:id_event
+eventRouter.put("/edit/:id_event", isAuth, async (req, res) => {
+  try {
+    const id_event = req.params.id_event;
+    const form = req.body;
+
+    const updatedEvent = await eventsModel.findByIdAndUpdate(
+      id_event,
+      { ...form },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json(updatedEvent);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
+// deletar evento
+// http://localhost:4000/event/delete/:id
+eventRouter.delete("/delete/:id_event", isAuth, async (req, res) => {
+  try {
+    const id_event = req.params.id_event;
+
+    // Deletar evento
+    const delectedEvent = await eventsModel.findByIdAndDelete(id_event);
+
+    return res.status(200).json(delectedEvent);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
   }
 });
 

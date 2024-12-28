@@ -1,6 +1,8 @@
 import express from "express";
 import userModel from "../model/user.model.js";
 import bcryptjs from "bcryptjs";
+import generateToken from "../config/jwt.config.js";
+import isAuth from "../middlewares/isAuth.js";
 
 const userRouter = express.Router();
 
@@ -26,10 +28,10 @@ userRouter.post("/signup", async (req, res) => {
       );
     }
 
-    const salt = await bcrypt.genSalt(SALT_ROUNDS);
-    const hashedPassword = await bcrypt.hash(form.password, salt);
+    const salt = await bcryptjs.genSalt(SALT_ROUNDS);
+    const hashedPassword = await bcryptjs.hash(form.password, salt);
 
-    const user = await UserModel.create({
+    const user = await userModel.create({
       ...form,
       passwordHash: hashedPassword,
     });
@@ -57,14 +59,14 @@ userRouter.post("/login", async (req, res) => {
     if (await bcryptjs.compare(form.password, user.passwordHash)) {
       //senhas iguais, pode fazer login
 
-      //   //gerar um token
-      //   const token = generateToken(user);
+      //gerar um token
+      const token = generateToken(user);
 
       user.passwordHash = undefined;
 
       return res.status(200).json({
         user: user,
-        // token: token,
+        token: token,
       });
     } else {
       //senhas diferentes, não pode fazer login

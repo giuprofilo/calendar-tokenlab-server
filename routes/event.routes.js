@@ -7,6 +7,7 @@ import isAuth from "../middlewares/isAuth.js";
 const eventRouter = express.Router();
 
 //get all events
+//http://localhost:4000/event/get_all
 eventRouter.get("/get_all", isAuth, async (req, res) => {
   try {
     const allEvents = await eventsModel.find();
@@ -18,7 +19,8 @@ eventRouter.get("/get_all", isAuth, async (req, res) => {
 });
 
 //get one event
-eventRouter.get("/get_all/id_event", isAuth, async (req, res) => {
+//http://localhost:4000/event/get_one/:id_event
+eventRouter.get("/get_one/id_event", isAuth, async (req, res) => {
   try {
     const id_event = req.params.id_event;
     const event = await eventsModel.findById(id_event);
@@ -30,6 +32,7 @@ eventRouter.get("/get_all/id_event", isAuth, async (req, res) => {
 });
 
 //rota p criar um evento
+//http://localhost:4000/event/create
 eventRouter.post("/create", isAuth, async (req, res) => {
   try {
     const form = req.body; // Receber os dados do formulário

@@ -15,13 +15,16 @@ userRouter.post("/signup", async (req, res) => {
     const form = req.body;
     console.log(form);
 
+    //confirmar se email e senha existem
     if (!form.email || !form.password) {
       throw new Error("Por favor, envie um email e uma senha");
     }
 
+    //confirmar se a senha e segura
+    //match -> retorna true se passou na regex, ou false se nao passar
     if (
       form.password.match(
-        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/gm
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/gm //REGEX
       ) === false
     ) {
       throw new Error(
@@ -29,15 +32,18 @@ userRouter.post("/signup", async (req, res) => {
       );
     }
 
+    //gerar salt
     const salt = await bcryptjs.genSalt(SALT_ROUNDS);
+
+    //encriptando a senha com a biblioteca bcryptjs + salt
     const hashedPassword = await bcryptjs.hash(form.password, salt);
 
     const user = await userModel.create({
       ...form,
-      passwordHash: hashedPassword,
+      passwordHash: hashedPassword, //guardar a senha haseada na DB
     });
 
-    user.passwordHash = undefined;
+    user.passwordHash = undefined; //para nao retornar o passwordHash
     return res.status(201).json(user);
   } catch (err) {
     console.log(err);
@@ -50,6 +56,7 @@ userRouter.post("/login", async (req, res) => {
   try {
     const form = req.body;
 
+    //verificr se existe email e senhaa
     if (!form.email || !form.password) {
       throw new Error("Por favor, preencha todos os dados!");
     }

@@ -40,7 +40,7 @@ eventRouter.post("/create", isAuth, async (req, res) => {
 
     // Verificar conflitos de horário
     const conflictingEvents = await eventsModel.find({
-      user: mongoose.Types.ObjectId(id_user),
+      user: new mongoose.Types.ObjectId(id_user),
       $or: [
         { dateStart: { $lt: form.dateEnd, $gte: form.dateStart } },
         { dateEnd: { $gt: form.dateStart, $lte: form.dateEnd } },

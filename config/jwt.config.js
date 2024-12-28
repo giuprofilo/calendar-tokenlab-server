@@ -9,6 +9,7 @@ export default function generateToken(user) {
   // expiration time = 20m / 1h / 12h / 10d / 365d
   const expiration = "12h";
 
+  //criando o token
   return jwt.sign(
     {
       //payload -> infos que eu quero guardar dentro do token
@@ -19,7 +20,7 @@ export default function generateToken(user) {
     },
     signature, //assinatura do token
     {
-      //obj de configuração determinando a valida do token
+      //obj de configuração determinando a validade do token
       expiresIn: expiration,
     }
   );

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export default function generateToken(user) {
-  // user._id user.email user.role user.name
+  // user._id user.email  user.name
 
   // assinatura
   const signature = process.env.TOKEN_SIGN_SECRET;
@@ -16,7 +16,6 @@ export default function generateToken(user) {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
     },
     signature, //assinatura do token
     {

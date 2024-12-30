@@ -12,8 +12,6 @@ const userSchema = new Schema(
       match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/, // match = regex
     },
 
-    role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
-
     telefone: { type: String, required: true, trim: true },
 
     passwordHash: { type: String, required: true },
